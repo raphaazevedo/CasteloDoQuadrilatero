@@ -10,6 +10,7 @@ public class Evento {
 	private UUID id;
 	private String nome;
 	private Date dataEvento;
+	private String descricao;
 	private TipoEvento tipoEvento;
 	
 }

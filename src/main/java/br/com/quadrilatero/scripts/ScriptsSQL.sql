@@ -28,6 +28,8 @@ create table eventos(
 	foreign key(tipoEvento_id)
 		references tipoEvento(id)
 );
+-- alterando tabela de eventos
+alter table eventos add column descricao text not null;
 -- criando tabela função
 create table funcao(
 	id					uuid			primary key,
@@ -46,4 +48,6 @@ insert into categoria(id, tipo)
 values(gen_random_uuid(), 'MORADOR');
 insert into categoria(id, tipo) 
 values(gen_random_uuid(), 'FUNCIONARIO');
+
+
 
