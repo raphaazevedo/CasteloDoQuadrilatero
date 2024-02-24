@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.quadrilatero.entities.Evento;
+import br.com.quadrilatero.entities.TipoEvento;
 import br.com.quadrilatero.factory.ConnectionFactory;
 
 public class EventosRepository {
@@ -24,6 +25,7 @@ public class EventosRepository {
 		statement.setObject(2, evento.getNome());
 		statement.setObject(3, new java.sql.Date(evento.getDataEvento().getTime()));
 		statement.setObject(4, evento.getTipoEvento().getId());
+		statement.setObject(5, evento.getDescricao());
 
 		statement.execute();
 		connection.close();
@@ -74,6 +76,7 @@ public class EventosRepository {
 		while(resultSet.next()) {
 			
 			evento = new Evento();
+			evento.setTipoEvento(new TipoEvento());
 			
 			evento.setId(UUID.fromString(resultSet.getString("id")));
 			evento.setNome(resultSet.getString("nome"));
@@ -107,6 +110,7 @@ public class EventosRepository {
 		if (resultSet.next()) {
 			
 			evento = new Evento();
+			evento.setTipoEvento(new TipoEvento());
 			
 			evento.setId(UUID.fromString(resultSet.getString("id")));
 			evento.setNome(resultSet.getString("nome"));

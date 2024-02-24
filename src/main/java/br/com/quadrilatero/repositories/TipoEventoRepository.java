@@ -26,6 +26,30 @@ public class TipoEventoRepository {
 		
 		connection.close();
 	}
+	public TipoEvento getByIdTipoEvento(UUID id)throws Exception{
+		
+		Connection connection = ConnectionFactory.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement
+				("SELECT * FROM tipoevento WHERE id = ?");
+		
+		statement.setObject(1, id);
+		
+		ResultSet resultSet = statement.executeQuery();
+		
+		TipoEvento tipoEvento = null;
+		if (resultSet.next()) {
+			
+			tipoEvento = new TipoEvento();
+			tipoEvento.setId(UUID.fromString(resultSet.getString("id")));
+			tipoEvento.setTipo(resultSet.getString("tipo"));
+			
+		}
+		
+		
+		connection.close();
+		return tipoEvento;
+	}
 	public List<TipoEvento> getAllTipoEvento()throws Exception{
 		
 		Connection connection = ConnectionFactory.getConnection();

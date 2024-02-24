@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.com.quadrilatero.entities.DepoimentoFesta;
+import br.com.quadrilatero.entities.Evento;
 import br.com.quadrilatero.factory.ConnectionFactory;
 
 public class DepoimentoFestaRepository {
@@ -43,6 +44,7 @@ public class DepoimentoFestaRepository {
 		while(resultSet.next()) {
 			
 			DepoimentoFesta depoimentoFesta = new DepoimentoFesta();
+			depoimentoFesta.setEvento(new Evento());
 			
 			depoimentoFesta.setId(UUID.fromString(resultSet.getString("id")));
 			depoimentoFesta.setEscritor(resultSet.getString("escritor"));

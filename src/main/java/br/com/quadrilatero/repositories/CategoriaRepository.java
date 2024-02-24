@@ -26,6 +26,32 @@ public class CategoriaRepository {
 		connection.close();
 		
 	}
+	public Categoria getByIdCategoria(UUID id)throws Exception{
+		
+		Connection connection = ConnectionFactory.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement
+				("SELECT * FROM categoria WHERE id = ?");
+		
+		statement.setObject(1, id);
+		
+		ResultSet resultSet = statement.executeQuery();
+		
+		Categoria categoria = null;
+		
+		if (resultSet.next()) {
+			
+			categoria = new Categoria();
+			
+			categoria.setId(UUID.fromString(resultSet.getString("id")));
+			categoria.setTipo(resultSet.getString("tipo"));
+		}
+		
+		
+		connection.close();
+		return categoria;
+		
+	}
 	public List<Categoria> getAllCategoria()throws Exception{
 		
 		Connection connection = ConnectionFactory.getConnection();

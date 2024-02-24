@@ -25,7 +25,7 @@ public class PessoaRepository {
 		statement.setObject(2, pessoa.getNome());
 		statement.setObject(3, pessoa.getApelido());
 		statement.setObject(4, pessoa.getEmail());
-		statement.setObject(5, pessoa.getNascimento());
+		statement.setObject(5, new java.sql.Date(pessoa.getNascimento().getTime()));
 		statement.setObject(6, pessoa.getCategoria().getId());
 		
 		
@@ -92,6 +92,7 @@ public class PessoaRepository {
 		if(resultSet.next()) {
 			
 			pessoa = new Pessoa();
+			pessoa.setCategoria(new Categoria());
 			
 			pessoa.setId(UUID.fromString(resultSet.getString("id")));
 			pessoa.setNome(resultSet.getString("nome"));
