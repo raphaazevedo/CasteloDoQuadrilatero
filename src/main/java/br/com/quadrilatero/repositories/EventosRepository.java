@@ -48,13 +48,12 @@ public class EventosRepository {
 		Connection connection = ConnectionFactory.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement
-				("UPDATE eventos SET dataevento = ?, tipoevento_id = ?, descricao = ?"
-						+ "WHERE id = ?");
+				("UPDATE eventos SET dataevento = ?, descricao = ? WHERE id = ?");
 		
 		statement.setObject(1, new java.sql.Date(evento.getDataEvento().getTime()));
-		statement.setObject(2, evento.getTipoEvento().getId());
-		statement.setObject(3, evento.getDescricao());
-		statement.setObject(4, evento.getId());
+
+		statement.setObject(2, evento.getDescricao());
+		statement.setObject(3, evento.getId());
 		
 		statement.execute();
 
@@ -65,7 +64,10 @@ public class EventosRepository {
 		Connection connection = ConnectionFactory.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement
-				("SELECT * FROM eventos");
+				//("SELECT * FROM eventos");
+				("select d.id, d.nome, d.dataevento, d.tipoevento_id, d.descricao, e.tipo "
+						+ " from eventos d inner join tipoevento e "
+						+ " on d.tipoevento_id = e.id");
 		
 		ResultSet resultSet = statement.executeQuery();
 		
@@ -83,6 +85,7 @@ public class EventosRepository {
 			evento.setDataEvento(new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString("dataevento")));
 			evento.setDescricao(resultSet.getString("descricao"));
 			evento.getTipoEvento().setId(UUID.fromString(resultSet.getString("tipoevento_id")));
+			evento.getTipoEvento().setTipo(resultSet.getString("tipo"));
 			
 			eventos.add(evento);
 			
@@ -99,7 +102,11 @@ public class EventosRepository {
 		Connection connection = ConnectionFactory.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement
-				("SELECT * FROM eventos WHERE id = ?");
+				//("SELECT * FROM eventos WHERE id = ?");
+				("select d.id, d.nome, d.dataevento, d.tipoevento_id, d.descricao, e.tipo "
+						+ " from eventos d inner join tipoevento e "
+						+ " on d.tipoevento_id = e.id"
+						+ " where d.id = ?");
 		
 		statement.setObject(1, id);
 		
@@ -117,6 +124,7 @@ public class EventosRepository {
 			evento.setDataEvento(new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString("dataevento")));
 			evento.setDescricao(resultSet.getString("descricao"));
 			evento.getTipoEvento().setId(UUID.fromString(resultSet.getString("tipoevento_id")));
+			evento.getTipoEvento().setTipo(resultSet.getString("tipo"));
 			
 			
 		}

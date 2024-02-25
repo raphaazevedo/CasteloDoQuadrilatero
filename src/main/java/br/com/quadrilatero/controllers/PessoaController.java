@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.quadrilatero.dtos.PessoaPostRequestDto;
+import br.com.quadrilatero.dtos.PessoaPutRequestDto;
 import br.com.quadrilatero.entities.Categoria;
 import br.com.quadrilatero.entities.Pessoa;
 import br.com.quadrilatero.repositories.CategoriaRepository;
@@ -76,8 +77,33 @@ public class PessoaController {
 		
 		return pessoaRepository.getByIdPessoa(id);
 	}
-	@PutMapping
-	public void put()throws Exception{
+	@PutMapping()
+	public String put(@RequestBody PessoaPutRequestDto dto){
+		
+		try {
+			
+			PessoaRepository pessoaRepository = new PessoaRepository();
+			
+			Pessoa pessoa = pessoaRepository.getByIdPessoa(dto.getId());
+			
+			if(pessoa == null) {
+				throw new Exception("Pessoa não encontrada!");
+			}
+			
+			pessoa.setApelido(dto.getApelido());
+			pessoa.setEmail(dto.getEmail());
+				
+			pessoaRepository.atualizaPessoa(pessoa);
+
+			
+			return "Pessoa atualizada com sucesso!";
+			
+			
+			
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		
 		
 	}
 	

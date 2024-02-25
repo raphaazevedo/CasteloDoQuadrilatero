@@ -50,8 +50,11 @@ public class PessoaRepository {
 		Connection connection = ConnectionFactory.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement
-				("SELECT * FROM pessoa ORDER BY nome");
-		
+				("select c.id, c.nome, c.apelido, c.email, c.nascimento, c.categoria_id as categoria_id, "
+				+ " p.tipo as tipo "
+				+ " from pessoa c inner join categoria p on p.id = c.categoria_id");
+				
+				
 		ResultSet resultSet = statement.executeQuery();
 		
 		List<Pessoa> pessoas = new ArrayList<Pessoa>();
@@ -67,6 +70,7 @@ public class PessoaRepository {
 			pessoa.setNascimento(new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString("nascimento")));
 			pessoa.setEmail(resultSet.getString("email"));
 			pessoa.getCategoria().setId(UUID.fromString(resultSet.getString("categoria_id")));
+			pessoa.getCategoria().setTipo(resultSet.getString("tipo"));
 			
 			pessoas.add(pessoa);
 			
@@ -81,7 +85,10 @@ public class PessoaRepository {
 		Connection connection = ConnectionFactory.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement
-				("SELECT * FROM pessoa WHERE id = ?");
+				("select c.id, c.nome, c.apelido, c.email, c.nascimento, c.categoria_id as categoria_id, "
+						+ " p.tipo as tipo "
+						+ " from pessoa c inner join categoria p on p.id = c.categoria_id "
+						+ " where c.id = ?");
 
 		statement.setObject(1, id);
 		
@@ -100,6 +107,7 @@ public class PessoaRepository {
 			pessoa.setNascimento(new SimpleDateFormat("yyyy-MM-dd").parse(resultSet.getString("nascimento")));
 			pessoa.setEmail(resultSet.getString("email"));
 			pessoa.getCategoria().setId(UUID.fromString(resultSet.getString("categoria_id")));
+			pessoa.getCategoria().setTipo(resultSet.getString("tipo"));
 			
 		}
 		

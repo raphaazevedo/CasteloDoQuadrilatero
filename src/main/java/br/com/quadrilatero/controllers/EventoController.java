@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.quadrilatero.dtos.EventosPostRequestDto;
+import br.com.quadrilatero.dtos.EventosPutRequestDto;
 import br.com.quadrilatero.entities.Evento;
 import br.com.quadrilatero.entities.TipoEvento;
 import br.com.quadrilatero.repositories.EventosRepository;
@@ -60,8 +61,30 @@ public class EventoController {
 
 	}
 
-	@PutMapping
-	public void put() throws Exception {
+	@PutMapping()
+	public String put(@RequestBody EventosPutRequestDto dto) throws Exception {
+		
+		try {
+			
+			EventosRepository eventosRepository = new EventosRepository();
+			
+			Evento evento = eventosRepository.getByIdEvento(dto.getId());
+			
+			if (evento == null) {
+				throw new Exception("Evento não encontrado!");
+			}
+			
+			evento.setDataEvento(new SimpleDateFormat("dd/MM/yyyy").parse(dto.getDataEvento()));
+			evento.setDescricao(dto.getDescricao());
+			
+			
+			
+			eventosRepository.updateEvento(evento);
+			
+			return "Evento atualizado com sucesso!";
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 
 	}
 
