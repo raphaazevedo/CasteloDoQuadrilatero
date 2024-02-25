@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,8 +48,28 @@ public class TipoEventoController {
 
 	}
 
-	@DeleteMapping
-	public void delete() throws Exception {
+	@DeleteMapping("{id}")
+	public String delete(@PathVariable("id") UUID id) throws Exception {
+		
+		
+		try {
+			
+			TipoEventoRepository tipoEventoRepository = new TipoEventoRepository();
+			
+			TipoEvento tipoEvento = tipoEventoRepository.getByIdTipoEvento(id);
+			
+			if(tipoEvento == null) {
+				throw new Exception("Tipo de evento não encontrado!");
+			}
+			tipoEventoRepository.deletaTipoEvento(tipoEvento);
+			
+			return "Tipo de evento excluido com sucesso!";
+			
+			
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		
 
 	}
 }

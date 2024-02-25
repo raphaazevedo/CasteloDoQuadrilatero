@@ -56,9 +56,27 @@ public class EventoController {
 		
 	}
 
-	@DeleteMapping
-	public void delete() throws Exception {
-
+	@DeleteMapping("{id}")
+	public String delete(@PathVariable("id") UUID id) throws Exception {
+		
+		try {
+			EventosRepository eventosRepository = new EventosRepository();
+			
+			Evento evento = eventosRepository.getByIdEvento(id);
+			
+			if (evento == null) {
+				throw new Exception ("Evento não encontrado!!");
+			}
+			
+			eventosRepository.deletaEvento(evento);
+			
+			return "Evento deletado com sucesso!";
+			
+			
+		} catch (Exception e) {
+			return e.getMessage();
+		}
+		
 	}
 
 	@PutMapping()

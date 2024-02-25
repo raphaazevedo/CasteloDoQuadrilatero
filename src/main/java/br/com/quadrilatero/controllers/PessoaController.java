@@ -59,8 +59,26 @@ public class PessoaController {
 		}
 		
 	}
-	@DeleteMapping
-	public void delete()throws Exception{
+	@DeleteMapping("{id}")
+	public String delete(@PathVariable("id") UUID id)throws Exception{
+		
+		try {
+		
+			PessoaRepository pessoaRepository = new PessoaRepository();
+			
+			Pessoa pessoa = pessoaRepository.getByIdPessoa(id);
+			
+			if(pessoa == null) {
+				throw new Exception("Pessoa não encontrada!");
+			}
+			
+			pessoaRepository.deletaPessoa(pessoa);
+			
+			return "Pessoa deletada com sucesso!";
+		}catch (Exception e) {
+			return e.getMessage();
+		}
+		
 		
 	}
 	@GetMapping

@@ -30,6 +30,35 @@ public class DepoimentoFestaRepository {
 		connection.close();
 		
 	}
+	public DepoimentoFesta getByIdDepoimentoFesta(UUID id)throws Exception {
+		
+		Connection connection = ConnectionFactory.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement
+				("SELECT * FROM depoimento_festa WHERE id = ?");
+		statement.setObject(1, id);
+		
+		ResultSet resultSet = statement.executeQuery();
+		
+		DepoimentoFesta depoimentoFesta = null;
+		
+		if(resultSet.next()) {
+			depoimentoFesta = new DepoimentoFesta();
+			depoimentoFesta.setEvento(new Evento());
+			
+			depoimentoFesta.setId(UUID.fromString(resultSet.getString("id")));
+			depoimentoFesta.setEscritor(resultSet.getString("escritor"));
+			depoimentoFesta.setDepoimento(resultSet.getString("depoimento"));
+			depoimentoFesta.getEvento().setId(UUID.fromString(resultSet.getString("festa_id")));
+			
+			
+		}
+		
+		
+		connection.close();
+		return depoimentoFesta;
+		
+	}
 	public List<DepoimentoFesta> getAllDepoimentoFesta()throws Exception{
 		
 		Connection connection = ConnectionFactory.getConnection();
