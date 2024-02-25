@@ -19,13 +19,14 @@ import br.com.quadrilatero.entities.Evento;
 import br.com.quadrilatero.entities.TipoEvento;
 import br.com.quadrilatero.repositories.EventosRepository;
 import br.com.quadrilatero.repositories.TipoEventoRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/eventos")
 public class EventoController {
 
 	@PostMapping
-	public String post(@RequestBody EventosPostRequestDto dto)throws Exception{
+	public String post(@RequestBody @Valid EventosPostRequestDto dto)throws Exception{
 		
 		try {
 			Evento evento = new Evento();
@@ -80,7 +81,7 @@ public class EventoController {
 	}
 
 	@PutMapping()
-	public String put(@RequestBody EventosPutRequestDto dto) throws Exception {
+	public String put(@RequestBody @Valid EventosPutRequestDto dto) throws Exception {
 		
 		try {
 			

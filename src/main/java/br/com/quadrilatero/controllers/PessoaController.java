@@ -19,6 +19,7 @@ import br.com.quadrilatero.entities.Categoria;
 import br.com.quadrilatero.entities.Pessoa;
 import br.com.quadrilatero.repositories.CategoriaRepository;
 import br.com.quadrilatero.repositories.PessoaRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/pessoas")
@@ -26,7 +27,7 @@ public class PessoaController {
 
 	
 	@PostMapping
-	public String post(@RequestBody PessoaPostRequestDto dto)throws Exception{
+	public String post(@RequestBody @Valid PessoaPostRequestDto dto)throws Exception{
 		
 		try {
 			
@@ -96,7 +97,7 @@ public class PessoaController {
 		return pessoaRepository.getByIdPessoa(id);
 	}
 	@PutMapping()
-	public String put(@RequestBody PessoaPutRequestDto dto){
+	public String put(@RequestBody @Valid PessoaPutRequestDto dto){
 		
 		try {
 			

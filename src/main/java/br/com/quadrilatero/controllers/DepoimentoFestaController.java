@@ -16,13 +16,14 @@ import br.com.quadrilatero.entities.DepoimentoFesta;
 import br.com.quadrilatero.entities.Evento;
 import br.com.quadrilatero.repositories.DepoimentoFestaRepository;
 import br.com.quadrilatero.repositories.EventosRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/depoimentosFesta")
 public class DepoimentoFestaController {
 
 	@PostMapping
-	public String post(@RequestBody DepoimentoFestaPostRequestDto dto)throws Exception{
+	public String post(@RequestBody @Valid DepoimentoFestaPostRequestDto dto)throws Exception{
 		
 		try {
 			

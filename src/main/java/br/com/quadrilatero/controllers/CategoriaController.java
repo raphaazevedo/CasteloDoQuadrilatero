@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.quadrilatero.dtos.CategoriaPostRequestDto;
 import br.com.quadrilatero.entities.Categoria;
 import br.com.quadrilatero.repositories.CategoriaRepository;
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -21,7 +22,7 @@ import br.com.quadrilatero.repositories.CategoriaRepository;
 public class CategoriaController {
 
 	@PostMapping
-	public String post(@RequestBody CategoriaPostRequestDto dto)throws Exception{
+	public String post(@RequestBody @Valid CategoriaPostRequestDto dto)throws Exception{
 		
 		try {
 			Categoria categoria = new Categoria();

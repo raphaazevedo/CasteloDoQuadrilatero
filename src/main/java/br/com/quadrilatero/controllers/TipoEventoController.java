@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.quadrilatero.dtos.TipoEventoPostRequestDto;
 import br.com.quadrilatero.entities.TipoEvento;
 import br.com.quadrilatero.repositories.TipoEventoRepository;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/tiposEvento")
 public class TipoEventoController {
 
 	@PostMapping
-	public String post(@RequestBody TipoEventoPostRequestDto dto) throws Exception {
+	public String post(@RequestBody @Valid TipoEventoPostRequestDto dto) throws Exception {
 
 		try {
 			TipoEvento tipoEvento = new TipoEvento();
