@@ -3,6 +3,7 @@ package br.com.quadrilatero.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,7 @@ import jakarta.validation.Valid;
 public class TipoEventoController {
 
 	@PostMapping
-	public String post(@RequestBody @Valid TipoEventoPostRequestDto dto) throws Exception {
+	public ResponseEntity<String> post(@RequestBody @Valid TipoEventoPostRequestDto dto) throws Exception {
 
 		try {
 			TipoEvento tipoEvento = new TipoEvento();
@@ -33,24 +34,35 @@ public class TipoEventoController {
 
 			tipoEventoRepository.insereTipoEvento(tipoEvento);
 			
-			return "Tipo de evento cadastrado com sucesso";
+			return ResponseEntity.status(201).body("Tipo de evento cadastrado com sucesso");
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 
 	}
 
 	@GetMapping
-	public List<TipoEvento> getAll() throws Exception {
+	public ResponseEntity<List<TipoEvento>> getAll() throws Exception {
 
-		TipoEventoRepository tipoEventoRepository = new TipoEventoRepository();
-
-		return tipoEventoRepository.getAllTipoEvento();
+		try {
+			TipoEventoRepository tipoEventoRepository = new TipoEventoRepository();
+	
+			List<TipoEvento> tipoEventos = tipoEventoRepository.getAllTipoEvento();
+			
+			if (tipoEventos.size() == 0) {
+				return ResponseEntity.status(204).body(null);
+			}
+			
+			return ResponseEntity.status(200).body(tipoEventos);
+			
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 
 	}
 
 	@DeleteMapping("{id}")
-	public String delete(@PathVariable("id") UUID id) throws Exception {
+	public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
 		
 		
 		try {
@@ -60,15 +72,15 @@ public class TipoEventoController {
 			TipoEvento tipoEvento = tipoEventoRepository.getByIdTipoEvento(id);
 			
 			if(tipoEvento == null) {
-				throw new Exception("Tipo de evento não encontrado!");
+				return ResponseEntity.status(204).body("Tipo de evento não encontrado!");
 			}
 			tipoEventoRepository.deletaTipoEvento(tipoEvento);
 			
-			return "Tipo de evento excluido com sucesso!";
+			return ResponseEntity.status(200).body("Tipo de evento excluido com sucesso!");
 			
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 

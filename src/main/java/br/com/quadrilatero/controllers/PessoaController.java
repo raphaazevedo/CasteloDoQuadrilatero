@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class PessoaController {
 
 	
 	@PostMapping
-	public String post(@RequestBody @Valid PessoaPostRequestDto dto)throws Exception{
+	public ResponseEntity<String> post(@RequestBody @Valid PessoaPostRequestDto dto)throws Exception{
 		
 		try {
 			
@@ -44,7 +45,7 @@ public class PessoaController {
 			Categoria categoria = categoriaRepository.getByIdCategoria(dto.getCategoriaId());
 			
 			if (categoria == null) {
-				return "Categoria não encontrada";
+				return ResponseEntity.status(204).body("Categoria não encontrada");
 			}
 						
 			pessoa.setCategoria(categoria);
@@ -53,15 +54,15 @@ public class PessoaController {
 			
 			pessoaRepository.inserePessoa(pessoa);
 			
-			return "Pessoa cadastrada com sucesso!";
+			return ResponseEntity.status(201).body("Pessoa cadastrada com sucesso!");
 			
 		}catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	}
 	@DeleteMapping("{id}")
-	public String delete(@PathVariable("id") UUID id)throws Exception{
+	public ResponseEntity<String> delete(@PathVariable("id") UUID id)throws Exception{
 		
 		try {
 		
@@ -70,34 +71,55 @@ public class PessoaController {
 			Pessoa pessoa = pessoaRepository.getByIdPessoa(id);
 			
 			if(pessoa == null) {
-				throw new Exception("Pessoa não encontrada!");
+				return ResponseEntity.status(204).body("Pessoa não encontrada!");
 			}
 			
 			pessoaRepository.deletaPessoa(pessoa);
 			
-			return "Pessoa deletada com sucesso!";
+			return ResponseEntity.status(200).body("Pessoa deletada com sucesso!");
 		}catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 		
 	}
 	@GetMapping
-	public List<Pessoa> getAll()throws Exception{
+	public ResponseEntity<List<Pessoa>> getAll()throws Exception{
 		
-		PessoaRepository pessoaRepository = new PessoaRepository();
-		
-		return pessoaRepository.getAllPessoa();
+		try {
+			PessoaRepository pessoaRepository = new PessoaRepository();
+			
+			List<Pessoa> pessoas = pessoaRepository.getAllPessoa();
+			
+			if(pessoas.size() == 0) {
+				return ResponseEntity.status(204).body(null);
+			}
+			
+			return ResponseEntity.status(200).body(pessoas);
+			
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 	@GetMapping("{id}")
-	public Pessoa getById(@PathVariable("id") UUID id)throws Exception{
-		
-		PessoaRepository pessoaRepository = new PessoaRepository();
-		
-		return pessoaRepository.getByIdPessoa(id);
+	public ResponseEntity<Pessoa> getById(@PathVariable("id") UUID id)throws Exception{
+		try {
+			PessoaRepository pessoaRepository = new PessoaRepository();
+			
+			Pessoa pessoa = pessoaRepository.getByIdPessoa(id);
+			
+			if(pessoa == null) {
+				return ResponseEntity.status(204).body(null);
+			}
+			
+			
+			return ResponseEntity.status(200).body(pessoa);
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 	@PutMapping()
-	public String put(@RequestBody @Valid PessoaPutRequestDto dto){
+	public ResponseEntity<String> put(@RequestBody @Valid PessoaPutRequestDto dto){
 		
 		try {
 			
@@ -106,7 +128,7 @@ public class PessoaController {
 			Pessoa pessoa = pessoaRepository.getByIdPessoa(dto.getId());
 			
 			if(pessoa == null) {
-				throw new Exception("Pessoa não encontrada!");
+				return ResponseEntity.status(204).body("Pessoa não encontrada!");
 			}
 			
 			pessoa.setApelido(dto.getApelido());
@@ -115,12 +137,12 @@ public class PessoaController {
 			pessoaRepository.atualizaPessoa(pessoa);
 
 			
-			return "Pessoa atualizada com sucesso!";
+			return ResponseEntity.status(201).body("Pessoa atualizada com sucesso!");
 			
 			
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 		

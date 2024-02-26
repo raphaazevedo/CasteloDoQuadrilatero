@@ -3,6 +3,7 @@ package br.com.quadrilatero.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,7 @@ import jakarta.validation.Valid;
 public class CategoriaController {
 
 	@PostMapping
-	public String post(@RequestBody @Valid CategoriaPostRequestDto dto)throws Exception{
+	public ResponseEntity<String> post(@RequestBody @Valid CategoriaPostRequestDto dto)throws Exception{
 		
 		try {
 			Categoria categoria = new Categoria();
@@ -34,22 +35,31 @@ public class CategoriaController {
 			
 			categoriaRepository.insertCategoria(categoria);
 			
-			return "Categoria inserida com sucesso!";
+			return ResponseEntity.status(201).body("Categoria inserida com sucesso!");
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	}
 	@GetMapping
-	public List<Categoria> getAll()throws Exception{
-		
-		CategoriaRepository categoriaRepository = new CategoriaRepository();
-		
-		return categoriaRepository.getAllCategoria();
+	public ResponseEntity<List<Categoria>> getAll()throws Exception{
+		try {
+			CategoriaRepository categoriaRepository = new CategoriaRepository();
+			List<Categoria> categorias = categoriaRepository.getAllCategoria();
+			
+			if(categorias.size() == 0) {
+				
+				return ResponseEntity.status(204).body(null);
+			}
+					
+			return ResponseEntity.status(200).body(categorias);
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 	@DeleteMapping("{id}")
-	public String delete(@PathVariable("id") UUID id)throws Exception{
+	public ResponseEntity<String> delete(@PathVariable("id") UUID id)throws Exception{
 		try {
 			CategoriaRepository categoriaRepository = new CategoriaRepository();
 			
@@ -57,16 +67,16 @@ public class CategoriaController {
 			
 			if (categoria == null){
 				
-				throw new Exception("Categoria não encontrada!");
+				return ResponseEntity.status(204).body("Categoria não encontrada!");
 				
 			}
 			
 			categoriaRepository.deletaCategoria(categoria);
 			
-			return "Categoria excluida com sucesso!";
+			return ResponseEntity.status(200).body("Categoria excluida com sucesso!");
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +27,7 @@ import jakarta.validation.Valid;
 public class EventoController {
 
 	@PostMapping
-	public String post(@RequestBody @Valid EventosPostRequestDto dto)throws Exception{
+	public ResponseEntity<String> post(@RequestBody @Valid EventosPostRequestDto dto)throws Exception{
 		
 		try {
 			Evento evento = new Evento();
@@ -41,7 +42,7 @@ public class EventoController {
 			TipoEvento tipoEvento = tipoEventoRepository.getByIdTipoEvento(dto.getTipoEventoID());
 			
 			if (tipoEvento == null) {
-				return "Tipo de evento não encontrado";
+				return ResponseEntity.status(204).body("Tipo de evento não encontrado");
 			}
 			
 			evento.setTipoEvento(tipoEvento);
@@ -50,15 +51,15 @@ public class EventoController {
 			
 			eventosRepository.InsereEvento(evento);
 			
-			return "Evento cadastrado com sucesso!";
+			return ResponseEntity.status(200).body("Evento cadastrado com sucesso!");
 		} catch (Exception e) {
-				return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	}
 
 	@DeleteMapping("{id}")
-	public String delete(@PathVariable("id") UUID id) throws Exception {
+	public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
 		
 		try {
 			EventosRepository eventosRepository = new EventosRepository();
@@ -66,22 +67,22 @@ public class EventoController {
 			Evento evento = eventosRepository.getByIdEvento(id);
 			
 			if (evento == null) {
-				throw new Exception ("Evento não encontrado!!");
+				return ResponseEntity.status(204).body("Evento não encontrado!!");
 			}
 			
 			eventosRepository.deletaEvento(evento);
 			
-			return "Evento deletado com sucesso!";
+			return ResponseEntity.status(200).body("Evento deletado com sucesso!");
 			
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	}
 
 	@PutMapping()
-	public String put(@RequestBody @Valid EventosPutRequestDto dto) throws Exception {
+	public ResponseEntity<String> put(@RequestBody @Valid EventosPutRequestDto dto) throws Exception {
 		
 		try {
 			
@@ -90,7 +91,7 @@ public class EventoController {
 			Evento evento = eventosRepository.getByIdEvento(dto.getId());
 			
 			if (evento == null) {
-				throw new Exception("Evento não encontrado!");
+				return ResponseEntity.status(204).body("Evento não encontrado!");
 			}
 			
 			evento.setDataEvento(new SimpleDateFormat("dd/MM/yyyy").parse(dto.getDataEvento()));
@@ -100,26 +101,43 @@ public class EventoController {
 			
 			eventosRepository.updateEvento(evento);
 			
-			return "Evento atualizado com sucesso!";
+			return ResponseEntity.status(200).body("Evento atualizado com sucesso!");
 		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 
 	}
 
 	@GetMapping
-	public List<Evento> getAll() throws Exception {
-		EventosRepository eventosRepository = new EventosRepository();
-
-		return eventosRepository.getAllEventos();
+	public ResponseEntity<List<Evento>> getAll() throws Exception {
+		
+		try {
+			EventosRepository eventosRepository = new EventosRepository();
+	
+			List<Evento> eventos = eventosRepository.getAllEventos();
+			
+			return ResponseEntity.status(200).body(eventos);
+			
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 
 	@GetMapping("{id}")
-	public Evento getById(@PathVariable("id") UUID id) throws Exception {
+	public ResponseEntity<Evento> getById(@PathVariable("id") UUID id) throws Exception {
 
-		EventosRepository eventosRepository = new EventosRepository();
-
-		return eventosRepository.getByIdEvento(id);
-
+		try {
+			EventosRepository eventosRepository = new EventosRepository();
+			Evento evento = eventosRepository.getByIdEvento(id);
+			
+			if (evento == null) {
+				return ResponseEntity.status(204).body(null);
+			}
+			
+			return ResponseEntity.status(200).body(evento);
+			
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 }

@@ -3,6 +3,7 @@ package br.com.quadrilatero.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ import jakarta.validation.Valid;
 public class DepoimentoFestaController {
 
 	@PostMapping
-	public String post(@RequestBody @Valid DepoimentoFestaPostRequestDto dto)throws Exception{
+	public ResponseEntity<String> post(@RequestBody @Valid DepoimentoFestaPostRequestDto dto)throws Exception{
 		
 		try {
 			
@@ -37,7 +38,7 @@ public class DepoimentoFestaController {
 			Evento evento = eventosRepository.getByIdEvento(dto.getEventoId());
 			
 			if (evento == null) {
-				return "Evento não encontrado!";
+				return ResponseEntity.status(204).body("Evento não encontrado!");
 			}
 			depoimentoFesta.setEvento(evento);
 			
@@ -45,9 +46,9 @@ public class DepoimentoFestaController {
 			
 			depoimentoFestaRepository.insereDepoimentoFesta(depoimentoFesta);
 			
-			return "Depoimento gravado com sucesso!";
+			return ResponseEntity.status(200).body("Depoimento gravado com sucesso!");
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 
 		
@@ -55,16 +56,21 @@ public class DepoimentoFestaController {
 		
 	}
 	@GetMapping
-	public List<DepoimentoFesta> getAll()throws Exception{
+	public ResponseEntity<List<DepoimentoFesta>> getAll()throws Exception{
 		
-		DepoimentoFestaRepository depoimentoFestaRepository = new DepoimentoFestaRepository();
-		
-		
-		return depoimentoFestaRepository.getAllDepoimentoFesta();
-		
+		try {
+			
+			DepoimentoFestaRepository depoimentoFestaRepository = new DepoimentoFestaRepository();
+			
+			List<DepoimentoFesta> depoimentoFestas = depoimentoFestaRepository.getAllDepoimentoFesta();
+			
+			return ResponseEntity.status(200).body(depoimentoFestas);
+		}catch (Exception e) {
+			return ResponseEntity.status(500).body(null);
+		}
 	}
 	@DeleteMapping("{id}")
-	public String delete(@PathVariable("id") UUID id)throws Exception{
+	public ResponseEntity<String> delete(@PathVariable("id") UUID id)throws Exception{
 		
 		try {
 			DepoimentoFestaRepository depoimentoFestaRepository = new DepoimentoFestaRepository();
@@ -72,15 +78,15 @@ public class DepoimentoFestaController {
 			DepoimentoFesta depoimentoFesta = depoimentoFestaRepository.getByIdDepoimentoFesta(id);
 			
 			if (depoimentoFesta == null) {
-				throw new Exception("Depoimento não encontrado!");
+				return ResponseEntity.status(204).body("Depoimento não encontrado!");
 			}
 			
 			depoimentoFestaRepository.deletaDepoimentoFesta(depoimentoFesta);
 			
-			return "Depoimento deletado com sucesso!";
+			return ResponseEntity.status(200).body("Depoimento deletado com sucesso!");
 			
 		} catch (Exception e) {
-			return e.getMessage();
+			return ResponseEntity.status(500).body(e.getMessage());
 		}
 		
 	}
